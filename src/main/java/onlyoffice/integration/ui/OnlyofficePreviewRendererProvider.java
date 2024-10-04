@@ -18,14 +18,14 @@
 
 package onlyoffice.integration.ui;
 
+import java.util.Set;
+
 import com.liferay.document.library.preview.DLPreviewRenderer;
 import com.liferay.document.library.preview.DLPreviewRendererProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.WebKeys;
-
-import java.util.Optional;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -40,12 +40,11 @@ public class OnlyofficePreviewRendererProvider implements DLPreviewRendererProvi
     }
 
     @Override
-    public Optional<DLPreviewRenderer> getPreviewDLPreviewRendererOptional(FileVersion fileVersion) {
+    public DLPreviewRenderer getPreviewDLPreviewRenderer(FileVersion fileVersion) {
         if (!_config.webPreview()) {
-            return Optional.empty();
+            return null;
         }
-
-        return Optional.of( (request, response) -> {
+        return (request, response) -> {
             RequestDispatcher requestDispatcher = _servletContext.getRequestDispatcher("/preview.jsp");
 
             request.setAttribute("fileEntryId", fileVersion.getFileEntryId());
@@ -55,17 +54,24 @@ public class OnlyofficePreviewRendererProvider implements DLPreviewRendererProvi
             }
 
             requestDispatcher.include(request, response);
-        });
+        };
     }
-
+    
     @Override
-    public Optional<DLPreviewRenderer> getThumbnailDLPreviewRendererOptional(FileVersion fileVersion) {
+    public DLPreviewRenderer getThumbnailDLPreviewRenderer(FileVersion fileVersion) {
         // TODO Auto-generated method stub
-        return Optional.empty();
+        return null;
     }
 
     private OnlyOfficeConfigManager _config;
     private final ServletContext _servletContext;
 
     private static final Log _log = LogFactoryUtil.getLog(OnlyofficePreviewRendererProvider.class);
+
+    @Override
+    public Set<String> getMimeTypes() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

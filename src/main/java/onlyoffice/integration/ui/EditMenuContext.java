@@ -18,11 +18,11 @@
 
 package onlyoffice.integration.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
-import javax.portlet.MutableRenderParameters;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
 import javax.portlet.WindowStateException;
@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.liferay.document.library.display.context.BaseDLViewFileVersionDisplayContext;
 import com.liferay.document.library.display.context.DLViewFileVersionDisplayContext;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -44,18 +45,14 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactory;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptMenuItem;
-import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.JavaScriptUIItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.Menu;
 import com.liferay.portal.kernel.servlet.taglib.ui.MenuItem;
-import com.liferay.portal.kernel.servlet.taglib.ui.ToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
-import com.liferay.portal.kernel.servlet.taglib.ui.URLToolbarItem;
 import com.liferay.portal.kernel.servlet.taglib.ui.URLUIItem;
 import com.liferay.portal.kernel.settings.PortletInstanceSettingsLocator;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.SettingsException;
-import com.liferay.portal.kernel.settings.SettingsFactoryUtil;
 import com.liferay.portal.kernel.settings.TypedSettings;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -108,26 +105,30 @@ extends BaseDLViewFileVersionDisplayContext {
     }
 
     public Menu getMenu() throws PortalException {
-        Menu menu = super.getMenu();
-        List<MenuItem> list = menu.getMenuItems();
-
+        List<MenuItem> menuItems = new ArrayList<MenuItem>();
+        List<DropdownItem> list = super.getActionDropdownItems();
+        for (DropdownItem dropdownItem : list) {
+            MenuItem menuItem = DropdownItemToMenuItem(dropdownItem);
+            menuItems.add(menuItem);
+        }
         if (showAction()) {
             if (_canView) {
                 URLMenuItem item = new URLMenuItem();
                 InitViewItem(item);
-                list.add(item);
+                menuItems.add(item);
             }
             if (_canConvert) {
                 JavaScriptMenuItem item = new JavaScriptMenuItem();
                 InitConvertItem(item);
-                list.add(item);
+                menuItems.add(item);
             }
         }
-
+        Menu menu = new Menu();
+        menu.setMenuItems(menuItems);
         return menu;
     }
 
-    @Override
+    /*
     public List<ToolbarItem> getToolbarItems() throws PortalException {
         List<ToolbarItem> toolbarItems = super.getToolbarItems();
 
@@ -143,7 +144,22 @@ extends BaseDLViewFileVersionDisplayContext {
         }
         return toolbarItems;
     }
+   */
+    
 
+    private MenuItem DropdownItemToMenuItem(DropdownItem dropdownItem) {
+        URLMenuItem menuItem = new URLMenuItem();
+        if (dropdownItem.get("icon") != null) {
+            menuItem.setIcon((String)dropdownItem.get("icon"));
+        }
+        String key = (String)dropdownItem.get("key");
+        menuItem.setKey(key);
+        menuItem.setLabel(LanguageUtil.get(request, _resourceBundle, key));
+        menuItem.setTarget("_blank");
+        menuItem.setURL(getDocUrl());
+        return menuItem;
+    }
+    
     private void InitViewItem(URLUIItem item) {
         String labelKey = "onlyoffice-context-action-view";
 
@@ -229,9 +245,10 @@ extends BaseDLViewFileVersionDisplayContext {
             return true;
         }
 
-        Settings settings = SettingsFactoryUtil.getSettings(
+        PortletInstanceSettingsLocator settingsLocator = 
             new PortletInstanceSettingsLocator(
-                _themeDisplay.getLayout(), portletDisplay.getId()));
+                _themeDisplay.getLayout(), portletDisplay.getId());
+        Settings settings = settingsLocator.getSettings();
 
         TypedSettings typedSettings = new TypedSettings(settings);
 

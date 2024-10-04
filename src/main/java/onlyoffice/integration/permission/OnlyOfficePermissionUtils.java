@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionHelper;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -38,8 +37,7 @@ public class OnlyOfficePermissionUtils {
         PermissionChecker checker = PermissionCheckerFactoryUtil.create(user); 
 
         return file.containsPermission(checker, ActionKeys.VIEW) &&
-                ModelResourcePermissionHelper.contains(
-                        _folderModelResourcePermission, checker, file.getGroupId(),
+                _folderModelResourcePermission.contains(checker,
                         file.getFolderId(), ActionKeys.ADD_DOCUMENT);
     }
 

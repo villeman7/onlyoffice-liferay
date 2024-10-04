@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 @Component(
     immediate = true,
     property = {
+            "javax.portlet.version=3.0",
             "com.liferay.portlet.add-default-resource=true",
             "com.liferay.portlet.display-category=category.hidden",
             "com.liferay.portlet.header-portlet-css=/css/main.css",

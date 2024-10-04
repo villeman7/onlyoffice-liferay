@@ -20,9 +20,11 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.framework", version: "1.9.0"
 	compileOnly group: "org.json", name: "json"
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.1.0"
+	compileOnly group: "com.liferay", name: "com.liferay.frontend.taglib.clay", version: "4.0.0"
 	
 	compileInclude group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.8"
 	compileInclude group: "org.apache.avalon.framework", name: "avalon-framework-api", version: "4.3.1"
+	compileInclude group: "com.liferay", name: "com.liferay.petra.function", version: "5.7.2"
 
 	cssBuilder group: "com.liferay", name: "com.liferay.css.builder", version: "3.0.2"
 }

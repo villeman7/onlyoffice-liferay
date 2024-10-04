@@ -89,7 +89,7 @@ public class CreateMVCActionCommand extends BaseMVCActionCommand {
 			File sourceFile = FileUtil.createTempFile(streamSourceFile);
 			String mimeType = MimeTypesUtil.getContentType(sourceFile);
 
-			String uniqueFileName = DLUtil.getUniqueFileName(repositoryId, folderId, title + "." + type);
+			String uniqueFileName = DLUtil.getUniqueFileName(repositoryId, folderId, title + "." + type, false);
 
 			ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), actionRequest);
 

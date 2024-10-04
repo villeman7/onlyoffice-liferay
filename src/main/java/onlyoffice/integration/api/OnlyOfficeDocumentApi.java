@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Scanner;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -250,10 +249,10 @@ public class OnlyOfficeDocumentApi extends HttpServlet {
             InputStream in = con.getInputStream();
 
             _dlApp.updateFileEntry(userId, fileEntry.getFileEntryId(), fileEntry.getFileName(), fileEntry.getMimeType(),
-                    fileEntry.getTitle(), fileEntry.getDescription(), "ONLYOFFICE Edit",dlVersionNumberIncrease, in,
-                    con.getContentLength(), serviceContext);
+                    fileEntry.getTitle(), fileEntry.getDescription(), "", "", dlVersionNumberIncrease, in,
+                                        con.getContentLength(), null, null, null, serviceContext);
 
-            _dlAppService.checkInFileEntry(fileEntry.getFileEntryId(), dlVersionNumberIncrease, "ONLYOFFICE Edit", serviceContext);
+            _dlAppService.checkInFileEntry(fileEntry.getFileEntryId(), dlVersionNumberIncrease, "", serviceContext);
         } catch (Exception e) {
             String msg = "Couldn't download or save file: " + e.getMessage();
             _log.error(msg, e);
